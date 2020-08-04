@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta sharset="UTF-8">
+		<title>S.C.A.V</title>	
+		<script src="Javascript/console.js"></script>
+
+		<link rel="stylesheet" href="css/estilo.css">
+	</head>	
+	
+	<body>
+		
+		<canvas id="minha-tela" width="608" height="608" style="border: #000 solid 1px;"> </canvas>
+	
+		<div id="start" class="centro">
+			<h1>REGRAS</h1>
+			<div id="regras">
+				<div>
+					OBJETIVO: Mova um personagem para o espaço do objeto alvo correspondente usando o menor número de movimentos possível. Mas primeiramente você tem que encontrar a solução mentalmente.
+				</div>
+				<div>
+					ANDAMENTO: Defina o número de jogadores. No começo da rodada o objeto alvo vai ser definido, memorize-o. Ao aparecer o mapa do jogo na tela, localize o objeto no mapa. 
+				</div>
+				<div>
+					Primeiramente, os jogadores devem imaginar em sua cabeça o caminho que o personagem deve percorrer no tabuleiro; cada jogador deve tentar chegar ao objeto alvo com o menor número de movimentos possível, sem realmente mover o personagem no mapa.
+				</div>
+				<div>
+					Para levar um personagem até um espaço alvo, você também pode usar outros personagens.
+				</div>
+				<div>
+					MOVIMENTO: Os personagens podem se mover na vertical e horizontal, mas eles não tem freios. Uma vez iniciado o movimento, ele não pode mais parar nem mudar de direção até encontrar um obstáculo. Entre os obstáculos incluem os outros personagens e paredes pretas. Cada movimento de um personagem até o próximo obstáculo conta como 1 movimento.
+				</div>
+				<div>
+					O jogador pode mover mais de um personagem para usar como obstáculo, mas a movimentação dele contará como um movimento.
+				</div>
+				<div>
+					EXECUÇÃO: O primeiro jogador a definir o número de movimentos até o objeto deve escrever no campo de "jogador 1" o número de movimentos, dando start no cronômetro para os outros jogadores definirem em até 3 minutos em quantos movimentos eles arriscam para um personagem chegar ao objeto.
+				</div>
+				<div>
+						FINAL: Ao final da contagem, o jogador 1 pode fazer a sua movimentação com os personagens. Escolha o personagem que você deseja mover no select box e clique no mapa antes de move-lo e assim sucessivamente com cada personagem que desejar mover. Se o número de movimentos for maior que o escrito no campo, a vez é passada para o outro jogador fazer a sua jogada. Mas se os movimentos chegarem até o objeto sorteado no início é vitória!
+				</div>
+			</div>
+			<button onclick="start();" name="oi" value="oi">Start</button>  
+		</div>
+		
+		<div id="numero-de-jogadores" class="centro">
+			<form name="seleciona-jogadores">
+				<label for="operacao">Numero de jogadores: </label>
+	            <select name="operacao" id="operacao">
+	                <option value="0">Selecione</option>
+	                <option value="2">Dois</option>
+	                <option value="3">Três</option>
+	                <option value="4">Quatro</option>
+				</select>
+			</form>
+			<br/>
+			<button onclick="numeroDeJogadores();" name="start" value="">Go!</button>
+		</div>
+		<div id="man"></div>
+		<div id="objetivoCorpo">Caça: <img id="objetivo" src=""></div>
+		
+		<div id="controle">	
+			<div id="j1">
+				<label for="jogador1">Jogador 1: </label>
+				<input type="number" id="jj1" name="jogador1" value="" placeholder="Numero de movimentações">
+				<button id="bj1" onclick="jogada(1);" name="ok">Go!</button>
+				<br/>
+			</div>	
+			<div id="j2">	
+				<label for="jogador2">Jogador 2: </label>
+				<input type="number" id="jj2" name="jogador2" value="" placeholder="Numero de movimentações">
+				<button id="bj2" onclick="jogada(2);" name="ok">Go!</button>
+				<br/>
+			</div>	
+			<div id="j3">
+				<label for="jogador3">Jogador 3: </label>
+				<input type="number" id="jj3" name="jogador3" value="" placeholder="Numero de movimentações">
+				<button id="bj3" onclick="jogada(3);" name="ok">Go!</button>
+				<br/>
+			</div>	
+			<div id="j4">	
+				<label for="jogador4">Jogador 4: </label>
+				<input type="number" id="jj4" name="jogador4" value="" placeholder="Numero de movimentações">
+				<button id="bj4" onclick="jogada(4);" name="ok">Go!</button>
+				<br/>
+			</div>
+		</div>
+	
+	<div id="crono">
+		03:00
+	</div>
+
+	<div id="chouse">
+		<label for="operacao">Boneco: </label>
+		<select name="operacao" id="boneco" onchange="chouse();">
+			<option value="123">Selecione</option>
+			<option value="0">Carol</option>
+			<option value="1">Vini</option>
+			<option value="2">Rapha</option>
+			<option value="3">Kenny</option>
+		</select>
+		<div id="passos"></div>
+	</div>
+
+	<div id="pronto">
+		<button id="bot-pronto" onclick="pronto();" name="ok">Pronto</button>
+	</div>
+
+	<div id="reset">
+		<button id="bot-pronto" onclick="inicio();" name="ok">Again!</button>
+	</div>
+
+	<script>
+		
+		var canvas = document.getElementById('minha-tela'); 
+		var ctx = canvas.getContext('2d');
+		var mapa = new Image();
+		var vini = new Image();
+		var rapha = new Image();
+		var carol = new Image();
+		var kenny = new Image();
+		var won = new Image();
+		var lose = new Image();
+		var x = [];
+		var y = [];
+		var backX = [];
+		var backY = [];
+		var PR = 38;
+		var cont = false; 
+		var base = 0;
+		var umaVez = true;
+		var g = 11;
+		var seg = 59;
+		var min = 3;
+		var obX;
+		var obY;
+		var play = 4;
+		var movimento = [];
+		var direcao = [];
+		var rank = [];
+		var jogo = true;
+		var movi = false;
+		var contR = 0;
+		var chamaPartida = true;
+		var comeca = false;
+		won.src = "img/win.jpeg"
+		lose.src = "img/lose.jpeg"
+		mapa.src = "img/background.png";
+		// requestAnimationFrame(gameloop);
+
+		window.onkeydown = pressionaTecla;
+		function pressionaTecla(tecla){
+			if(!cont){
+
+				if(tecla.keyCode == 39){
+					cont = true;
+					base = 1;
+				}
+				if(tecla.keyCode == 37){
+					cont = true;
+					base = 2;
+				}
+				if(tecla.keyCode == 40){
+					cont = true;
+					base = 3;
+				}
+				if(tecla.keyCode == 38){
+					cont = true;
+					base = 4;	
+				}
+			}
+		
+		}
+
+		function gameloop(){
+			if(jogo){
+				ctx.drawImage(mapa, 0, 0);
+				if (umaVez) {
+					sorteio();
+					objeto();
+				}
+				bixinho();
+				if(comeca){
+					turno();
+				}
+			}		
+			requestAnimationFrame(gameloop);
+		}
+
+		function turno() {
+			if(movimento[rank[contR]] == 0){
+				movi = false;
+				if(x[g] == obX && y[g] == obY){
+					gameOver(1);
+				}else if(contR < play){
+					contR ++;
+					if(movimento[rank[contR]] > 998){
+						turno();
+					}
+					fim();
+				}else{
+					gameOver(0);
+				}
+			}
+			document.getElementById('man').innerHTML = "Jogador " + (rank[contR] + 1);
+			document.getElementById('passos').innerHTML ="Movimentos: " + movimento[rank[contR]];
+		}
+
+		function gameOver(fim) {
+			jogo = false;
+			document.getElementById('objetivoCorpo').hidden = true;
+			document.getElementById('man').hidden = true;
+			document.getElementById('chouse').hidden = true;
+			document.getElementById('reset').hidden = false;
+			if(fim == 1) {
+				ctx.drawImage(won, 0, 0);
+			}else{
+				ctx.drawImage(lose, 0, 0);
+			}
+		}
+
+		function sorteio (){
+			for (var i = 0; i < 4; i++){
+				var j = 0;
+				var santo = 0;
+				
+				do{	
+					if(santo == i){
+						j = 0;
+					}
+					do {
+						do { 
+							x[i] = Math.floor(Math.random()*(570 - 0))+0;	
+						}while((x[i] % 38) != 0);
+
+						do {
+							y[i] = Math.floor(Math.random()*(570 - 0))+0;	
+						}while((y[i] % 38) != 0);
+
+					}while (( y[i] == 38 && x[i] == 152 ) || ( y[i] == 76 && (x[i] == 38 || x[i] == 456)) || (y[i] == 114 && (x[i] == 228 || x[i] == 532)) || (y[i] == 152 && x[i] ==456) || (y[i] == 190 && x[i] == 494) || (y[i] == 228 && x[i] ==114) || (y[i] == 266 && (x[i] == 304 || x[i] == 266)) || (y[i] == 304 && (x[i] == 190 || x[i] == 266 || x[i] == 304)) || (y[i] == 342 && (x[i] == 38 || x[i] == 456)) || (y[i] == 380 && (x[i] == 152 || x[i] == 380)) || (y[i] == 456 && x[i] == 532) || (y[i] == 494 && x[i] == 190) || (y[i] == 532 && (x[i] == 418 || x[i] == 114)));
+					for (var k = 0; k <= i; k++){
+						if ( j != 1 && k != i)
+							if (x[i] == x[k] && y[i] == y[k]){
+								j = 1;
+							}
+						if (k == i){
+							santo = k;
+						}
+					}
+				}while (j == 1);
+				
+				backX[i] = x[i];
+				backY[i] = y[i];
+			}
+			for(var i = 0; i < 4; i++){
+				direcao[i] = 1;
+			}
+			umaVez = false;	
+		}
+
+		function objeto() {
+			var i = Math.floor(Math.random()*(17 - 1)) + 1;
+			switch(i) {
+				case 1:
+				obX = 38;
+				obY = 76;
+				document.getElementById("objetivo").src="img/itens/ovo.png";
+				break;
+				case 2:
+				obX = 38;
+				obY = 342;
+				document.getElementById("objetivo").src="img/itens/hamburg.png";
+				break; 
+				case 3:
+				obX = 114;
+				obY = 228;
+				document.getElementById("objetivo").src="img/itens/estrela.png";
+				break; 
+				case 4:
+				obX = 114;
+				obY = 532;
+				document.getElementById("objetivo").src="img/itens/pinto.png";
+				break; 
+				case 5:
+				obX = 152;
+				obY = 38;
+				document.getElementById("objetivo").src="img/itens/cogumelo.png";
+				break; 
+				case 6:
+				obX = 152;
+				obY = 380;
+				document.getElementById("objetivo").src="img/itens/fritas.png";
+				break; 
+				case 7:
+				obX = 190;
+				obY = 304;
+				document.getElementById("objetivo").src="img/itens/frango.png";
+				break; 
+				case 8:
+				obX = 190;
+				obY = 494;
+				document.getElementById("objetivo").src="img/itens/anel.png";
+				break; 
+				case 9:
+				obX = 228;
+				obY = 114;
+				document.getElementById("objetivo").src="img/itens/moeda.png";
+				break; 
+				case 10:
+				obX = 380;
+				obY = 380;
+				document.getElementById("objetivo").src="img/itens/vinho.png";
+				break; 
+				case 11:
+				obX = 418;
+				obY = 152;
+				document.getElementById("objetivo").src="img/itens/pocao.png";
+				break; 
+				case 12:
+				obX = 418;
+				obY = 532;
+				document.getElementById("objetivo").src="img/itens/queijo.png";
+				break; 
+				case 13:
+				obX = 456;
+				obY = 76;
+				document.getElementById("objetivo").src="img/itens/peixe.png";
+				break; 
+				case 14:
+				obX = 456;
+				obY = 342;
+				document.getElementById("objetivo").src="img/itens/mario.png";
+				break; 
+				case 15:
+				obX = 494;
+				obY = 190;
+				document.getElementById("objetivo").src="img/itens/box.png";
+				break; 
+				case 16:
+				obX = 532;
+				obY = 114;
+				document.getElementById("objetivo").src="img/itens/tocha.png";
+				break; 
+				case 17:
+				obX = 532;
+				obY = 456;
+				document.getElementById("objetivo").src="img/itens/espada.png";
+				break;  
+			}
+		}
+
+		function bixinho(){
+			if(movi){
+				if (cont){
+					switch(base){
+						case 1: //direita
+						direcao[g] = 1;
+						if (x[g] != 570 && !( y[g] == 0 && (x[g] == 38 || x[g] == 456)) && !(y[g] == 38 && x[g] == 114) && !(y[g] == 76 && (x[g] == 38 || x[g] == 456)) && !(y[g] == 114 && (x[g] == 228 || x[g] == 532)) && !(y[g] == 152 && x[g] == 380) && !(y[g] == 190 && x[g] == 456) && !(y[g] == 228 && x[g] == 76) && !(y[g] == 266 && x[g] == 228) && !(y[g] == 304 && (x[g] == 190 || x[g] == 228)) && !(y[g] == 342 && (x[g] == 38 || x[g] == 418)) && !( y[g] == 380 && (x[g] == 114 || x[g] == 380)) && !(y[g] == 456 && x[g] == 532) && !(y[g] == 494 && x[g] == 190) && !(y[g] == 532 && (x[g] == 76 || x[g] == 380)) && !(y[g] == 570 && (x[g] == 266 || x[g] == 494))){
+							var k = 0;
+							for (var j = 0; j < 4; j++){
+								if (g != j){
+									if((x[g] + PR) == x[j] && (y[g]) == y[j]){
+										k = 1;
+										cont = false;
+										base = 0;
+										movimento[rank[contR]] --;
+									}	
+								}
+							}
+							if(k != 1) {
+								x[g] = x[g] + PR;
+
+							}		
+						}else {
+							cont = false;
+							base = 0;
+							movimento[rank[contR]] --;
+						}
+						break;
+						case 2: //esquerda
+						direcao[g] = 2;
+						if (x[g] != 0 && !( y[g] == 0 && (x[g] == 76 || x[g] == 494)) && !(y[g] == 38 && x[g] == 152) && !(y[g] == 76 && (x[g] == 76 || x[g] == 494)) && !(y[g] == 114 && (x[g] == 266 || x[g] == 570)) && !(y[g] == 152 && x[g] == 418) && !(y[g] == 190 && x[g] == 494)  && !(y[g] == 228 && x[g] == 114) && !(y[g] == 266 && x[g] == 342) && !(y[g] == 304 && x[g] == 342) && !(y[g] == 342 && (x[g] == 76 || x[g] == 456)) && !( y[g] == 380 && (x[g] == 152 || x[g] == 418)) && !(y[g] == 456 && x[g] == 570) && !(y[g] == 494 && x[g] == 228) && !(y[g] == 532 && (x[g] == 114 || x[g] == 418)) && !(y[g] == 570 && (x[g] == 304 || x[g] == 532))){
+							var k = 0;
+							for (var j = 0; j < 4; j++){
+								if (g != j){
+									if((x[g] - PR) == x[j] && (y[g]) == y[j]){
+										k = 1;
+										cont = false;
+										base = 0;
+										movimento[rank[contR]] --;
+									}	
+								}
+							}
+							if(k != 1) {
+								x[g] = x[g] - PR;
+							}
+						}else {
+							cont = false;
+							base = 0;
+							movimento[rank[contR]] --;
+						}
+						break;
+						case 3: //baixo
+						direcao[g] = 1;
+						if (y[g] != 570 && !(x[g] == 0 && (y[g] == 190 || y[g] == 418)) && !(x[g] == 38 && (y[g] == 38 || y[g] == 342)) && !(x[g] == 114 && (y[g] == 228 || y[g] == 494)) && !(x[g] == 152 && (y[g] == 0 || y[g] == 380)) && !(x[g] == 190 && (y[g] == 266 || y[g] == 456)) && !(x[g] == 228 && y[g] == 114) && !(x[g] == 266 && y[g] == 228) && !(x[g] == 304 && y[g] == 228) && !(x[g] == 380 && y[g] == 380) && !(x[g] == 418 && (y[g] == 152 || y[g] == 532)) && !(x[g] == 456 && (y[g] == 76 || y[g] == 304)) && !(x[g] == 494 && y[g] == 152) && !(x[g] == 532 && (y[g] == 76 || y[g] == 418)) && !(x[g] == 570 && (y[g] == 190 || y[g] == 342))){
+							var k = 0;
+							for (var j = 0; j < 4; j++){
+								if (g != j){
+									if((x[g]) == x[j] && (y[g] + PR) == y[j]){
+										k = 1;
+										cont = false;
+										base = 0;
+										movimento[rank[contR]] --;
+									}	
+								}
+							}
+							if(k != 1) {
+								y[g] = y[g] + PR;
+							}
+						}else{
+							cont = false;
+							base = 0;
+							movimento[rank[contR]] --;
+						}
+						break;
+						case 4: //cima
+						direcao[g] = 3;
+						if (y[g] != 0 && !(x[g] == 0 && (y[g] == 228 || y[g] == 456)) && !(x[g] == 38 && (y[g] == 76 || y[g] == 380)) && !(x[g] == 114 && (y[g] == 266 || y[g] == 532)) && !(x[g] == 152 && (y[g] == 38 || y[g] == 418)) && !(x[g] == 190 && (y[g] == 304 || y[g] == 494)) && !(x[g] == 228 && y[g] == 152) && !(x[g] == 266 && y[g] == 342) && !(x[g] == 304 && y[g] == 342) && !(x[g] == 380 && y[g] == 418) && !( x[g] == 418 && (y[g] == 190 || y[g] == 570)) && !(x[g] == 456 && (y[g] == 114 || y[g] == 342)) && !(x[g] == 494 && y[g] == 190) && !(x[g] == 532 && (y[g] == 114 || y[g] == 456)) && !(x[g] == 570 && (y[g] == 228 || y[g] == 380))){
+							var k = 0;
+							for (var j = 0; j < 4; j++){
+								if (g != j){
+									if((x[g]) == x[j] && (y[g] - PR) == y[j]){
+										k = 1;
+										cont = false;
+										base = 0;
+										movimento[rank[contR]] --;
+									}	
+								}
+							}
+							if(k != 1) {
+								y[g] = y[g] - PR;
+							}
+						}else{
+							cont = false;
+							base = 0;
+							movimento[rank[contR]] --;
+						}
+						break;
+						default:
+					}
+				}
+			}		
+			for(var i = 0; i < 4; i++)	{	
+				switch(i){
+					case 0:
+					if(direcao[i] == 1){
+						carol.src = "img/personagens/caroldir.png";
+					}else if(direcao[i] == 2){
+						carol.src = "img/personagens/carolesq.png";
+					}else{
+						carol.src = "img/personagens/caroltras.png";
+					}
+					ctx.drawImage(carol, x[i], y[i]);
+					break;
+					case 1:
+					if(direcao[i] == 1){
+						vini.src = "img/personagens/vinidir.png";
+					}else if(direcao[i] == 2){
+						vini.src = "img/personagens/viniesq.png";
+					}else{
+						vini.src = "img/personagens/vinitras.png";
+					}
+					ctx.drawImage(vini, x[i], y[i]);
+					break;
+					case 2:
+					if(direcao[i] == 1){
+						rapha.src = "img/personagens/rafadir.png";
+					}else if(direcao[i] == 2){
+						rapha.src = "img/personagens/rafaesq.png";
+					}else{
+						rapha.src = "img/personagens/rafatras.png";
+					}
+					ctx.drawImage(rapha, x[i], y[i]);
+					break;
+					case 3:
+					if(direcao[i] == 1){
+						kenny.src = "img/personagens/kenydir.png";
+					}else if(direcao[i] == 2){
+						kenny.src = "img/personagens/kenyesq.png";
+					}else{
+						kenny.src = "img/personagens/kenytras.png";
+					}
+					ctx.drawImage(kenny, x[i], y[i]);
+					break;
+				}	
+			}
+		}
+
+		function jogada (valor){
+			var passa = false;
+			if(valor == 1 ){
+				passa = true;
+			}else if(valor != 1){
+				for(var i = 1; i < valor; i++){
+					if((document.getElementById('jj' + valor).value) == document.getElementById('jj' + i).value){
+						passa = false;
+						i = i + 10;
+					}else{
+						passa = true;
+					}
+				}
+			}
+			if(passa){
+				for(var i = 1; i < 5; i++){
+					if(valor == i){
+						document.getElementById('jj' + valor).setAttribute("disabled", "true");
+						document.getElementById('bj' + valor).setAttribute("disabled", "true");
+						if(valor != 4){
+							document.getElementById('jj' + (valor + 1)).disabled = false;
+							document.getElementById('bj' + (valor + 1)).disabled = false;
+						}
+					}
+				}
+				movimento[(valor-1)] = parseInt(document.getElementById('jj' + valor).value);
+				if (valor == play){
+					min = 0;
+					seg = 1;
+				}
+				if (valor == 1){
+					setInterval('tempo()', 1000);
+				}
+				console.log(movimento[0]);
+			}			
+		}
+
+		function tempo(){
+			if(min != -1){
+				if(seg < 10){
+					document.getElementById('crono').innerHTML = "0" + min + ":0" + seg;
+				}else{
+					document.getElementById('crono').innerHTML = "0" + min + ":" + seg;
+				}
+
+				seg --;
+
+				if(seg == 0){
+					min --;
+					seg = 59;
+				}
+			}else {
+				if(chamaPartida){
+					partida();
+				}
+			}
+		}
+
+		function partida(){
+			chamaPartida = false;
+			var backup = [];
+			var x;
+			var ajuste = 1;
+			for(var i = 0; i < play; i++){
+				if(movimento[i] < 1 || movimento[i] > 100){
+					movimento[i] = 999 + ajuste;
+					ajuste ++;
+				}
+			}
+			for(var i = 0; i < play; i++){
+				backup[i] = movimento[i];
+			}
+			for(var i = 0; i < play; i++){
+				for(var j = 0; j < play; j++){
+					if(backup[i] < backup[j]){
+						x = backup[j];
+						backup[j] = backup[i];
+						backup[i] = x;
+					}
+				}
+			}
+			for(var i = 0; i < play; i++){
+				for(var j = 0; j < play; j++){
+					if(backup[i] == movimento[j]){
+						rank[i] = j;
+					}
+				}
+			}
+			document.getElementById('pronto').hidden=false;
+			document.getElementById('crono').hidden=true;
+			document.getElementById('controle').hidden=true;
+			document.getElementById('man').hidden=false;
+			comeca = true;
+		}
+
+		function pronto() {
+			document.getElementById('pronto').hidden=true;
+			document.getElementById('chouse').hidden=false;
+			movi = true;
+		}
+
+		function fim() {
+			for(var i = 0; i < 4; i++){
+				x[i] = backX[i];
+				y[i] = backY[i];
+			}
+			document.getElementById('pronto').hidden=false;
+			document.getElementById('chouse').hidden=true;
+			g = 11;
+		}
+
+		function chouse() {
+			var e = document.getElementById('boneco');
+			var selecionado = parseInt(e.options[e.selectedIndex].value);
+			
+			g = g-g;
+			g = selecionado;
+		}
+
+		function numeroDeJogadores(){
+			var e = document.getElementById('operacao');
+			var selecionado = e.options[e.selectedIndex].value;
+
+			if(selecionado == 0){
+				start();
+			}
+			else if(selecionado == 2){
+				document.getElementById('j3').hidden=true;
+				document.getElementById('j4').hidden=true;
+				play = 2;
+			}
+			else if(selecionado == 3){
+				document.getElementById('j4').hidden=true;
+				play = 3;
+			}	
+			if(selecionado != 0){
+				document.getElementById('objetivoCorpo').hidden=false;
+				document.getElementById('minha-tela').hidden=false;
+				document.getElementById('controle').hidden=false;
+				document.getElementById('crono').hidden=false;
+				document.getElementById('numero-de-jogadores').hidden=true;
+				for(var i = 2; i <= play; i++){
+					document.getElementById('jj' + i).setAttribute("disabled", "true");
+					document.getElementById('bj' + i).setAttribute("disabled", "true");
+				}
+				gameloop();
+
+			}
+		}
+	</script>
+	</body>
+
+</html>	

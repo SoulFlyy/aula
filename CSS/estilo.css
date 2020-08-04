@@ -1,0 +1,127 @@
+@font-face {
+    font-family: gamegirl;
+    src: url('../font/Gamegirl.ttf');
+}
+
+* { 
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #000;
+}
+
+button {
+    background-color: #000;
+    font-family: gamegirl;
+    color: #FFF;
+}
+
+div, h1 {
+    font-family: gamegirl;
+    color: #FFF;
+}
+
+div {
+    font-size: 10px;
+}
+
+#regras {
+    width: 600px;
+    position: relative;
+    margin-top: 10px;
+}
+
+#regras div {
+    margin-top: 7px;
+}
+
+#start {
+    position: relative;
+    margin-left: 30%;
+}
+
+h1 {
+    position: relative;
+    margin-left: 25%;
+}
+
+#start button {
+    margin-top: 10px;
+    margin-left: 27%;
+}
+
+canvas {
+    position: relative;
+}
+
+#numero-de-jogadores {
+    position: relative;
+    margin-top: 70px;
+    margin-left: 38%;
+
+}
+
+#numero-de-jogadores button {
+    position: relative;
+    margin-left: 122px;
+    margin-top: 5px;
+}
+
+#man, #objetivoCorpo, #controle, #crono, #chouse, #pronto, #reset {
+    position: relative;
+}
+#man{
+    width: 300px;
+    position: relative;
+    top: -450px;
+    right: -63%;
+    font-size: 25px;
+}
+
+#controle {
+    position: relative;
+    top: -500px;
+    right: -57%;
+    width: 350px;
+}
+
+#crono{
+    position: relative;
+    font-size: 30px;
+    right: -64%;
+    top: -260px;
+    width: 300px;
+}
+
+#objetivoCorpo{
+    position: relative;
+    right: -46%;
+    top: -600px;
+    width: 300px;
+}
+
+#pronto {
+    position: relative;
+    right: -68%;
+    top: -350px;
+    width: 300px;
+}
+
+#chouse {
+    position: relative;
+    top: -500px;
+    right: -66%;
+    width: 350px;
+}
+
+#passos {
+    margin-top: 5px;
+}
+
+#reset {
+    right: -68%;
+    top: -350px;
+    width: 300px;
+}

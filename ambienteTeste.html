@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="utf-8"/>
+	<title>Código 5 - Interação com o usuário</title>
+	</head>
+<body>
+	<canvas id="minha-tela" width="600" height="600" style="border: #F00 solid 1px;"> </canvas>  
+	<script>  
+		var canvas = document.getElementById('minha-tela'); 
+		var ctx = canvas.getContext('2d');
+		//definir o ínicio do desenho
+		var x = 0
+		var y = 150;
+        var a = -100;
+        var b = -100;
+        var PR = 37.5;
+        var mapa = new Image();
+		//a função gameloop é chamada aqui
+		mapa.src = "img/background.jpg";
+		requestAnimationFrame(gameloop);
+
+
+		
+		window.onkeydown = pressionaTecla;
+        function pressionaTecla(tecla){
+			if(tecla.keyCode == 39  ) {
+			    if(x != 562.5){
+			    	x = x + PR; //aumentar o x tem o efeito de ir para a direita
+			    }else{
+			    	x = x;
+			    }
+                
+			}
+			if(tecla.keyCode == 37  ) {
+				if(x != 0){
+			    	x = x - PR; //aumentar o x tem o efeito de ir para a direita
+			    }else{
+			    	x = x;
+			    }
+			}	
+			if(tecla.keyCode == 40  ) {
+				if(y != 562.5){
+					y = y + PR; 
+				}else{
+					y = y;
+				}
+			}	
+			if(tecla.keyCode == 38  ) {
+				if(y != 0){
+					y = y - PR; 
+				}else{
+					y = y;
+				} 
+			}
+			if(tecla.keyCode == 65){
+				tiroPika(x,y);
+			}	
+        }
+		function gameloop() {
+			ctx.drawImage(mapa, 0, 0);
+			//desenharQuadrado(x,y);
+			desenharQuadrado(x,y);
+            
+            tiroPika(a, b);
+
+			//chama novamente o ciclo da animação
+            requestAnimationFrame(gameloop);
+		}
+		
+		// var imagem = new imagem();
+		// imagem.src = "direita.png";
+		
+		// function desenharImagem(){
+		// 	ctx.clearRect(0, 0, 800, 400);
+		// 	ctx.drawImage(imagem, x, y);
+		// }
+		
+		function desenharQuadrado(pX,pY) {
+			// ctx.clearRect(0, 0, 800, 400); //antes de fazer o desenho é preciso limpar o canvas
+			// ctx.clearRect(0, 0, 600, 600);
+
+            ctx.fillStyle = '#00F';
+			ctx.fillRect(pX, pY, 37.5, 37.5);
+		}
+
+		function tiroPika(tX,tY) {
+			
+
+
+
+			// if(tX == x){
+				if(tX == x){
+                    a = tX + 40;
+                }
+				b = tY - 5;
+				ctx.fillStyle = '#00F';
+				ctx.fillRect(a, b, 10, 10);
+                
+			// }else{
+			// 	ctx.fillStyle = '#fff';
+			// 	ctx.fillRect(tX, tY, 5, 5);
+			// 	tY = tY - 5; 
+			// 	ctx.fillStyle = '#00F';
+			// 	ctx.fillRect(tX, tY, 100, 100);
+			// }
+			
+			// if(tY != 0){
+			// 	tiroPika(tX,tY);
+			// }else{
+			// 	ctx.fillStyle = '#fff';
+			// 	ctx.fillRect(tX, tY, 5, 5);
+			// }
+		}
+	</script>  
+</body>
+</html>
+
+  
+window.load = iniciarForm;
+
+function iniciarForm(){
+	var canvas = document.getElementById('minha-tela'); 
+	var ctx = canvas.getContext('2d');
+	var mapa = new Image();
+	var x = 0;
+	var y = 0;
+	var PR = 37.5;
+	var cont = false;
+
+	mapa.src = "img/background.jpg";
+	requestAnimationFrame(gameloop);
+
+	window.onkeydown = pressionaTecla;
+	function pressionaTecla(tecla){
+		cont = true;
+		if(tecla.keyCode == 39){
+			if(x != 562.5){
+				cont = true;
+				bixinho(x,y,39);
+			}else {
+				x = x;
+			}
+		}
+		if(tecla.keyCode == 37){
+			if(x != 0){
+				x = x - PR;
+			}else {
+				x = x;
+			}
+		}
+		if(tecla.keyCode == 40){
+			if(y != 562.5){
+				y = y + PR;
+			}else {
+				y = y;
+			}
+		}
+		if(tecla.keyCode == 38){
+			if(y != 0){
+				y = y - PR;
+			}else {
+				y = y;
+			}	
+		}
+	}
+
+
+	function gameloop(){
+		ctx.drawImage(mapa, 0, 0);
+		bixinho(x,y,0)		
+		requestAnimationFrame(gameloop);
+	}
+
+	function bixinho(bX,bY,coord){
+		var PR;
+
+		ctx.fillStyle = '#00f';
+		ctx.fillRect(bX, bY, 37.5, 37.5);
+		if (coord == 39 || coord == 40) {
+			PR = 37.5;
+		}else if(coord == 37 || coord == 38){
+			PR = - 37.5;
+		}
+		while(cont){
+			
+			setTimeout(function () {
+				x = x + PR;
+				ctx.fillStyle = '#00f';
+				ctx.fillRect(bX, bY, 37.5, 37.5);
+				if (x == 562.5) {
+					cont = false;
+				}
+			}, 500);
+		}
+	}
+
+
+}
